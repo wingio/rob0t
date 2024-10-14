@@ -2,7 +2,8 @@
 Bot for nin0chat that I made for fun
 
 # Running
-> ![INFO]
+> ![NOTE]
+> 
 > Make sure you have git, node, and pnpm installed
 
 1. Clone the repository
