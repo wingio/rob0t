@@ -1,4 +1,5 @@
 import EventEmitter from "events"
+import { exit } from "process";
 import WebSocket from "ws"
 
 declare interface BotEvents {
@@ -12,6 +13,7 @@ export class BotClient extends EventEmitter<BotEvents> {
 
     private key: string | undefined;
     private ws: WebSocket;
+    private reconnectCount: number = 0;
 
     messages: Message[] = []
 
@@ -22,21 +24,30 @@ export class BotClient extends EventEmitter<BotEvents> {
 
     connect(): any {
         this.ws = new WebSocket(BotClient.wsUrl)
-
+        
+        this.ws.on('open', () => this.handleOpen());
+        this.ws.on("close", () => this.handleClose());
         this.ws.on('error', console.error);
+        this.ws.on('message', data => this.handleEvent(data));
 
-        this.ws.once('open', () => this.handleOpen());
-
-        this.ws.on('message', data => this.handleMessage(data));
+        setInterval(() => {
+            this.reconnectCount = 0
+        }, 5 * 60 * 1000)
     }
 
     private handleOpen() {
         this.emit("connect")
     }
 
-    private handleMessage(wsdata) {
-        if(!wsdata) return;
-        let data = typeof wsdata == "object" && (wsdata.content || wsdata.op) ? wsdata : typeof wsdata == "object" ? JSON.parse(String(wsdata)) : JSON.parse(wsdata);
+    private handleClose() {
+        if (this.reconnectCount > 10) return exit(1);
+        this.reconnectCount += 1
+        this.connect();
+    }
+
+    private handleEvent(event) {
+        if(!event) return;
+        let data = typeof event == "object" && (event.content || event.op) ? event : typeof event == "object" ? JSON.parse(String(event)) : JSON.parse(event);
     
         if (data.op === 10) {
             this.messages.push(data.messages)
