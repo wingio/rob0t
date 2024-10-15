@@ -10,12 +10,12 @@ export class BotClient extends EventEmitter<BotEvents> {
 
     static wsUrl: string = "wss://guhws.nin0.dev"
 
-    private key: string;
+    private key: string | undefined;
     private ws: WebSocket;
 
     messages: Message[] = []
 
-    constructor(key: string) {
+    constructor(key: string | undefined) {
         super()
         this.key = key;
     }
