@@ -6,7 +6,7 @@ defineCommand({
     description: "Get all unique users in chat",
     usage: null,
     execute: (msg, ...args) => {
-        let uniqueUsernames = [...new Set(Robot.messages.map(msg => msg.username))]
-        Robot.sendMessage(`People currently in chat:\n${uniqueUsernames.join()}`)
+        let uniqueUsernames = [...new Set(Robot.messages.map(msg => msg.username))].filter(u => u !== "")
+        Robot.sendMessage(`People currently in chat:\n${uniqueUsernames.join(", ")}`)
     }
 })
