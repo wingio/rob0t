@@ -14,7 +14,14 @@ Robot.on("connect", () => {
 })
 
 Robot.on("chatMessage", (msg) => {
-    console.log(`<${msg.role == 12 ? "[BOT] " : msg.role == 2 ? "[ADMIN] " : ""}${msg.username}>: ${msg.content}`)
+    let tags = {
+        0: "",
+        2: "[ADMIN] ",
+        3: "[DISCORD] ",
+        12: "[BOT] "
+    }
+
+    console.log(`<${tags[msg.role]}${msg.username}>: ${msg.content}`)
 
     if (msg.role == 12) return;
     if (!msg.content.startsWith(prefix)) return

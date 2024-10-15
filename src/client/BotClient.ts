@@ -5,6 +5,7 @@ import WebSocket from "ws"
 declare interface BotEvents {
     connect: [];
     chatMessage: [Message]
+    raw: [any]
 }
 
 export class BotClient extends EventEmitter<BotEvents> {
@@ -48,7 +49,9 @@ export class BotClient extends EventEmitter<BotEvents> {
     private handleEvent(event) {
         if(!event) return;
         let data = typeof event == "object" && (event.content || event.op) ? event : typeof event == "object" ? JSON.parse(String(event)) : JSON.parse(event);
-    
+        
+        this.emit("raw", data)
+
         if (data.op === 10) {
             this.messages.push(data.messages)
             return;
