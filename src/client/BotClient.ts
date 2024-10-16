@@ -1,6 +1,7 @@
 import EventEmitter from "events"
 import { exit } from "process";
 import WebSocket from "ws"
+import { Message } from "./Message";
 
 declare interface BotEvents {
     connect: [];
@@ -61,8 +62,9 @@ export class BotClient extends EventEmitter<BotEvents> {
             return;
         }
         
-        this.messages.push(data)
-        this.emit("chatMessage", data as Message);
+        const msg = new Message(this, data.content, data.username, data.role, data.user);
+        this.messages.push(msg)
+        this.emit("chatMessage", msg);
     }
 
     sendMessage(message: string) {

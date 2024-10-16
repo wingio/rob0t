@@ -1,4 +1,5 @@
 import CommandsMap from "__commands__";
+import { Message } from "./client/Message";
 
 export interface Command {
     name: string;

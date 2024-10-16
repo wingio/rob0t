@@ -18,7 +18,7 @@ Robot.on("chatMessage", (msg) => {
         12: "[BOT] "
     }
 
-    console.log(`<${tags[msg.role]}${msg.username}>: ${msg.content}`)
+    console.log(`<${tags[msg.role]}${msg.getUsername()}>: ${msg.content}`)
 
     if (msg.role == 12) return;
     if (!msg.content.startsWith(PREFIX)) return
