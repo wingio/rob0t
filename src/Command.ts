@@ -9,10 +9,17 @@ export interface Command {
     execute(message: Message, ...args: string[]): Promise<any> | void;
 }
 
-export const Commands: Record<string, Command> = Object.create(null);
+export interface FullCommand extends Command {
+    category: string
+}
+
+export const Commands: Record<string, FullCommand> = Object.create(null);
 let currentCategory = "";
 
-export function defineCommand<C extends Command>(cmd: C): void {
+export function defineCommand<C extends Command>(c: C): void {
+    const cmd = c as any as FullCommand
+    cmd.category = currentCategory
+
     Commands[cmd.name] = cmd;
     cmd.aliases?.forEach(alias => Commands[alias] = cmd);
 }
