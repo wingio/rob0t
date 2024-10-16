@@ -42,8 +42,9 @@ export class BotClient extends EventEmitter<BotEvents> {
 
     private handleClose() {
         if (this.reconnectCount > 10) return exit(1);
+        
+        setTimeout(() => this.connect(), this.reconnectCount * 2000)
         this.reconnectCount += 1
-        this.connect();
     }
 
     private handleEvent(event) {
