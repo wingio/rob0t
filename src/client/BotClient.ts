@@ -10,21 +10,24 @@ declare interface BotEvents {
 
 export class BotClient extends EventEmitter<BotEvents> {
 
-    static wsUrl: string = "wss://guhws.nin0.dev"
+    static WS_URL: string = "wss://guhws.nin0.dev"
 
     private key: string | undefined;
+    private name: string;
+
     private ws: WebSocket;
     private reconnectCount: number = 0;
 
     messages: Message[] = []
 
-    constructor(key: string | undefined) {
+    constructor(key: string | undefined, name: string | undefined) {
         super()
         this.key = key;
+        this.name = name || "rob0t"
     }
 
-    connect(): any {
-        this.ws = new WebSocket(BotClient.wsUrl)
+    connect() {
+        this.ws = new WebSocket(BotClient.WS_URL)
         
         this.ws.on('open', () => this.handleOpen());
         this.ws.on("close", () => this.handleClose());
@@ -42,7 +45,7 @@ export class BotClient extends EventEmitter<BotEvents> {
 
     private handleClose() {
         if (this.reconnectCount > 10) return exit(1);
-        
+
         setTimeout(() => this.connect(), this.reconnectCount * 2000)
         this.reconnectCount += 1
     }
@@ -66,7 +69,7 @@ export class BotClient extends EventEmitter<BotEvents> {
         this.ws.send(
             JSON.stringify(
                 {
-                    username: "rob0t",
+                    username: this.name,
                     content: message,
                     key: this.key
                 }

@@ -1,11 +1,8 @@
 import { BotClient } from "./client/BotClient"
 import { Commands } from "./Command"
-import dotenv from "dotenv"
+import { BOT_KEY, BOT_NAME, PREFIX } from "./env"
 
-dotenv.config()
-const prefix = "?"
-
-export const Robot = new BotClient(process.env.BOT_KEY)
+export const Robot = new BotClient(BOT_KEY, BOT_NAME)
 
 Robot.connect()
 
@@ -24,7 +21,7 @@ Robot.on("chatMessage", (msg) => {
     console.log(`<${tags[msg.role]}${msg.username}>: ${msg.content}`)
 
     if (msg.role == 12) return;
-    if (!msg.content.startsWith(prefix)) return
+    if (!msg.content.startsWith(PREFIX)) return
     const args = msg.content.split(" ")
     const command = args.shift()?.slice(1)?.toLowerCase()!
 
