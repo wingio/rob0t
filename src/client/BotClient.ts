@@ -16,7 +16,7 @@ export class BotClient extends EventEmitter<BotEvents> {
     private key: string | undefined;
     private name: string;
 
-    private ws: WebSocket;
+    private ws: WebSocket | undefined;
     private reconnectCount: number = 0;
 
     messages: Message[] = []
@@ -51,9 +51,9 @@ export class BotClient extends EventEmitter<BotEvents> {
         this.reconnectCount += 1
     }
 
-    private handleEvent(event) {
+    private handleEvent(event: WebSocket.RawData) {
         if(!event) return;
-        let data = typeof event == "object" && (event.content || event.op) ? event : typeof event == "object" ? JSON.parse(String(event)) : JSON.parse(event);
+        let data = JSON.parse(event.toString())
         
         this.emit("raw", data)
 
@@ -68,7 +68,7 @@ export class BotClient extends EventEmitter<BotEvents> {
     }
 
     sendMessage(message: string) {
-        this.ws.send(
+        this.ws?.send(
             JSON.stringify(
                 {
                     username: this.name,

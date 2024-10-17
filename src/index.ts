@@ -22,7 +22,7 @@ Robot.on("chatMessage", (msg) => {
 
     if (msg.role == 12) return;
     if (!msg.content.startsWith(PREFIX)) return
-    const args = msg.content.split(" ")
+    const args = msg.content.split(/ +/g)
     const command = args.shift()?.slice(1)?.toLowerCase()!
 
     const cmd = Commands[command];
